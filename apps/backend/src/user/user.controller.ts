@@ -1,34 +1,58 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
+import {
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { UseGuards } from '@nestjs/common/decorators';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginDto } from './dto/login.dto';
+import { User } from './entities/user.entity';
+import { AuthGuard } from './user.guard';
+import { UserService } from './user.service';
 
-@Controller('user')
+@Controller('auth')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
-  @Get()
-  findAll() {
+  @Get('users')
+  @UseGuards(AuthGuard)
+  findAll(@Req() req: Request) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    console.log(req.payload);
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Post('signup')
+  async signUp(
+    @Body() newUser: CreateUserDto,
+  ): Promise<{ user: Partial<User>; token: string }> {
+    try {
+      const { user, token }: { user: Partial<User>; token: string } =
+        await this.userService.signUp(newUser);
+      delete user.password;
+      return { user, token };
+    } catch (err: unknown) {
+      throw new InternalServerErrorException(err);
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+  @Post('signin')
+  async signIn(
+    @Body() credentials: LoginDto,
+  ): Promise<{ user: Partial<User>; token: string }> {
+    try {
+      const { user, token }: { user: Partial<User>; token: string } =
+        await this.userService.signIn(credentials);
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+      delete user.password;
+
+      return { user, token };
+    } catch (err: unknown) {
+      throw new InternalServerErrorException(err);
+    }
   }
 }

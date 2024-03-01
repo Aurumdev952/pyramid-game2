@@ -10,7 +10,6 @@ import { EventModule } from './event/event.module';
 import { VoteModule } from './vote/vote.module';
 @Module({
   imports: [
-    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -19,6 +18,7 @@ import { VoteModule } from './vote/vote.module';
       global: true,
       secret: process.env.JWT_SECRET,
     }),
+    UserModule,
     EventModule,
     VoteModule,
   ],

@@ -1,28 +1,26 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { VoteService } from './vote.service';
+import { AuthRequest } from '../types';
+import { AuthGuard } from '../user/user.guard';
 import { CreateVoteDto } from './dto/create-vote.dto';
-import { UpdateVoteDto } from './dto/update-vote.dto';
+import { VoteService } from './vote.service';
 
+@UseGuards(AuthGuard)
 @Controller('vote')
 export class VoteController {
   constructor(private readonly voteService: VoteService) {}
 
   @Post()
-  create(@Body() createVoteDto: CreateVoteDto) {
-    return this.voteService.create(createVoteDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.voteService.findAll();
+  create(@Body() createVoteDto: CreateVoteDto, @Req() req: AuthRequest) {
+    const userId = req.user.id;
+    return this.voteService.create(createVoteDto, userId);
   }
 
   @Get(':id')
@@ -30,13 +28,8 @@ export class VoteController {
     return this.voteService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVoteDto: UpdateVoteDto) {
-    return this.voteService.update(+id, updateVoteDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.voteService.remove(+id);
+  @Get('event/:id')
+  findAllByEvent(@Param('id') id: string) {
+    return this.voteService.findAllByEvent(+id);
   }
 }

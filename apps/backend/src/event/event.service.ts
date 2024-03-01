@@ -1,26 +1,26 @@
+import { EntityManager, EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
-
+import { Event } from './entities/event.entity';
 @Injectable()
 export class EventService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
+  constructor(
+    @InjectRepository(Event)
+    private readonly eventRepository: EntityRepository<Event>,
+    private readonly em: EntityManager,
+  ) {}
+  async create(createEventDto: CreateEventDto) {
+    const event = this.eventRepository.create(createEventDto);
+    await this.em.persistAndFlush(event);
+    return event;
   }
 
-  findAll() {
-    return `This action returns all event`;
+  async findAll() {
+    return await this.eventRepository.findAll({ populate: ['votes'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
-  }
-
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  async findOne(id: number) {
+    return await this.eventRepository.findOne({ id: id });
   }
 }

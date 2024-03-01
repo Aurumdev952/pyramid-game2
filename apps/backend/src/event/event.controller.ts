@@ -1,16 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { EventService } from './event.service';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../user/user.guard';
 import { CreateEventDto } from './dto/create-event.dto';
-import { UpdateEventDto } from './dto/update-event.dto';
+import { EventService } from './event.service';
 
+@UseGuards(AuthGuard)
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
@@ -28,15 +21,5 @@ export class EventController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.eventService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventService.update(+id, updateEventDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventService.remove(+id);
   }
 }

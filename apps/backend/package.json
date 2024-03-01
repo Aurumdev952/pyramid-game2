@@ -1,8 +1,8 @@
 {
   "name": "backend",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "this is the backend for pyramid game",
+  "author": "Aurumdev",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "schema:update": "mikro-orm schema:update --run --config dist/mikro-orm.config.js"
+    "schema:update": "mikro-orm schema:update --run --config dist/mikro-orm.config.ts"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.1.6",

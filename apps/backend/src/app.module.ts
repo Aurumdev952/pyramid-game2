@@ -6,6 +6,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import config from './mikro-orm.config';
 import { UserModule } from './user/user.module';
+import { EventModule } from './event/event.module';
+import { VoteModule } from './vote/vote.module';
 @Module({
   imports: [
     UserModule,
@@ -17,6 +19,8 @@ import { UserModule } from './user/user.module';
       global: true,
       secret: process.env.JWT_SECRET,
     }),
+    EventModule,
+    VoteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

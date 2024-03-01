@@ -2,8 +2,8 @@ import { Options, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import dotenv from 'dotenv';
 dotenv.config();
 const config: Options = {
-  // entities: ['dist/**/*.entity.js'],
-  // entitiesTs: ['src/**/*.entitity.ts'],
+  entities: ['dist/**/*.entity.js'],
+  entitiesTs: ['src/**/*.entity.ts'],
   // entities: ['./dist/entities'],
   // entitiesTs: ['./src/entities'],
   dbName: process.env.DATABASE_NAME,

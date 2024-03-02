@@ -29,21 +29,25 @@ export class VoteService {
     if (check_event != null) {
       throw new BadRequestException('User already voted');
     }
-    const event = this.eventRepository.findOne({ id: createVoteDto.event });
+    const event = await this.eventRepository.findOne({
+      id: createVoteDto.event,
+    });
     if (event == null) {
       throw new NotFoundException('Event not found');
     }
-    const votedFor = this.userRepository.findOne({
+    const votedFor = await this.userRepository.findOne({
       id: createVoteDto.votedFor,
     });
     if (votedFor == null) {
       throw new NotFoundException('User not found');
     }
 
-    const user = this.userRepository.findOne({ id: createVoteDto.user });
+    const user = await this.userRepository.findOne({ id: userId });
     if (user == null) {
       throw new NotFoundException('User not found');
     }
+    console.log(user, event, votedFor);
+
     const vote = this.voteRepository.create({
       votedFor,
       user,

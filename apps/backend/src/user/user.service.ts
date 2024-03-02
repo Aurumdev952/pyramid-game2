@@ -62,7 +62,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (!bcrypt.compare(data.password, user.password)) {
+    if (!bcrypt.compareSync(data.password, user.password)) {
       throw new HttpException('Password mismatch', HttpStatus.FORBIDDEN);
     }
     const token = await this.jwtService.signAsync({

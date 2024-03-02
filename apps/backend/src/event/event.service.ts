@@ -17,7 +17,9 @@ export class EventService {
   }
 
   async findAll() {
-    return await this.eventRepository.findAll({ populate: ['votes'] });
+    return await this.eventRepository.findAll({
+      populate: ['votes', 'votes.user', 'votes.votedFor'],
+    });
   }
 
   async findOne(id: number) {

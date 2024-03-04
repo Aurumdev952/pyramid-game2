@@ -23,6 +23,20 @@ export class VoteController {
     return this.voteService.create(createVoteDto, userId);
   }
 
+  @Post('/many')
+  async createMany(
+    @Body() createVoteDtos: CreateVoteDto[],
+    @Req() req: AuthRequest,
+  ) {
+    const userId = req.user.id;
+    const res = await Promise.all(
+      createVoteDtos.map((createVoteDto) =>
+        this.voteService.create(createVoteDto, userId),
+      ),
+    );
+    return res;
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.voteService.findOne(+id);

@@ -23,7 +23,7 @@ export class VoteController {
     return this.voteService.create(createVoteDto, userId);
   }
 
-  @Post('/many')
+  @Post('many')
   async createMany(
     @Body() createVoteDtos: CreateVoteDto[],
     @Req() req: AuthRequest,
@@ -45,5 +45,10 @@ export class VoteController {
   @Get('event/:id')
   findAllByEvent(@Param('id') id: string) {
     return this.voteService.findAllByEvent(+id);
+  }
+
+  @Get('result/:id')
+  getResultByEvent(@Param('id') id: string) {
+    return this.voteService.resultsByEvent(+id);
   }
 }

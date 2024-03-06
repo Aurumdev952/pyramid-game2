@@ -1,5 +1,6 @@
-import { EntityManager, EntityRepository } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager } from '@mikro-orm/postgresql';
 import {
   BadRequestException,
   Injectable,
@@ -65,6 +66,17 @@ export class VoteService {
     return await this.voteRepository.findAll({
       where: { event: { id: eventId } },
       populate: ['user', 'event', 'votedFor'],
+      exclude: ['user.password', 'votedFor.password'],
     });
+  }
+
+  async resultsByEvent(eventId: number) {
+    const con = this.em.getConnection();
+    const res = await con.execute(
+      'SELECT u.id, u.username, COUNT(v.voted_for_id) AS voteCount FROM users AS u INNER JOIN votes AS v ON u.id = v.voted_for_id WHERE v.event_id = ? GROUP BY u.id ORDER BY voteCount DESC',
+      [eventId],
+      'all',
+    );
+    return res;
   }
 }

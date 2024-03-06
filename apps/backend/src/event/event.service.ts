@@ -25,6 +25,7 @@ export class EventService {
   async findAll() {
     return await this.eventRepository.findAll({
       populate: ['votes', 'votes.user', 'votes.votedFor'],
+      exclude: ['votes.user.password', 'votes.votedFor.password'],
     });
   }
 
@@ -34,7 +35,7 @@ export class EventService {
 
   // @Cron('0 15 * * */1') // prod
   // @Cron('*/5 * * * * *') // stage
-  @Cron('*/30 * * * * *') // test
+  @Cron('*/5 * * * *') // test
   async handleCron() {
     const time = Date.now();
     this.logger.log('creating event at ' + time);
@@ -46,10 +47,11 @@ export class EventService {
     const callback = async () => {
       this.logger.log(`closing event ${event.name}`);
       event.isClosed = true;
+      event.dateEnded = new Date();
       await this.fork.persistAndFlush(event);
     };
     // 60000, // 3600000 prod,
-    const timeout = setTimeout(callback, 10000);
+    const timeout = setTimeout(callback, 500000);
     this.schedulerRegistry.addTimeout('close event ' + event.id, timeout);
   }
 }

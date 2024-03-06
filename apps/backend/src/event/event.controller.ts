@@ -2,8 +2,9 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../user/user.guard';
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventService } from './event.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @ApiTags('Event')
 @UseGuards(AuthGuard)
 @Controller('event')

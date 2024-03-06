@@ -11,8 +11,9 @@ import { AuthRequest } from '../types';
 import { AuthGuard } from '../user/user.guard';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { VoteService } from './vote.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @ApiTags('Vote')
 @UseGuards(AuthGuard)
 @Controller('vote')

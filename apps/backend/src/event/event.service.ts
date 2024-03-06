@@ -33,9 +33,9 @@ export class EventService {
     return await this.eventRepository.findOne({ id: id });
   }
 
-  // @Cron('0 15 * * */1') // prod
   // @Cron('*/5 * * * * *') // stage
-  @Cron('*/5 * * * *') // test
+  // @Cron('*/5 * * * *') // test
+  @Cron('0 15 * * */1') // prod
   async handleCron() {
     const time = Date.now();
     this.logger.log('creating event at ' + time);
@@ -51,7 +51,7 @@ export class EventService {
       await this.fork.persistAndFlush(event);
     };
     // 60000, // 3600000 prod,
-    const timeout = setTimeout(callback, 500000);
+    const timeout = setTimeout(callback, 3600000);
     this.schedulerRegistry.addTimeout('close event ' + event.id, timeout);
   }
 }
